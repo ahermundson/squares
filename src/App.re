@@ -4,10 +4,27 @@
 
 let component = ReasonReact.statelessComponent("App");
 
-let make = (~message, _children) => {
+type square = {
+  id: int,
+  isTaken: bool
+};
+
+let squares: array(square) = [|
+  {id: 1, isTaken: false},
+  {id: 2, isTaken: false}
+|];
+
+let make = (_children) => {
   ...component,
   render: _self =>
     <div className="App">
-      <h1>(ReasonReact.string("This is my first Reason React app."))</h1>
+      <h1>(ReasonReact.string("Squares"))</h1>
+      {
+        squares
+        |> Array.map(square =>
+             <h1 key=string_of_int(square.id)>(ReasonReact.string(string_of_int(square.id)))</h1>
+           )
+        |> ReasonReact.array
+      }
     </div>,
 };
