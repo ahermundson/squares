@@ -11,7 +11,8 @@ type square = {
 
 let squares: array(square) = [|
   {id: 1, isTaken: false},
-  {id: 2, isTaken: false}
+  {id: 2, isTaken: false},
+  {id: 3, isTaken: false}
 |];
 
 let make = (_children) => {
