@@ -1,29 +1,46 @@
 [%bs.raw {|require('./App.css')|}];
 
-[@bs.module] external logo : string = "./logo.svg";
+[@bs.module] external logo: string = "./logo.svg";
 
 let component = ReasonReact.statelessComponent("App");
 
+let str = ReasonReact.string;
+
 type square = {
   id: int,
-  isTaken: bool
+  isTaken: bool,
+  x: int,
+  y: int
 };
 
-let squares: array(square) = [|
-  {id: 1, isTaken: false},
-  {id: 2, isTaken: false},
-  {id: 3, isTaken: false}
+type row = array(square);
+
+type board = array(row);
+
+let makeRow = i => Belt.Array.makeBy(10, j => {isTaken: false, id: i + j, x: i, y: j});
+
+let board: board = [|
+  makeRow(0),
+  makeRow(1),
+  makeRow(2)
 |];
 
-let make = (_children) => {
+let make = _children => {
   ...component,
   render: _self =>
     <div className="App">
-      <h1>(ReasonReact.string("Squares"))</h1>
+      <h1> {str("Squares")} </h1>
       {
-        squares
-        |> Array.map(square =>
-             <h1 key=string_of_int(square.id)>(ReasonReact.string(string_of_int(square.id)))</h1>
+        board
+        |> Array.map(row =>
+             row
+             |> Array.map(square => 
+                <div key={string_of_int(square.id)}>
+                  <h1>{str("X " ++ string_of_int(square.x))}</h1>
+                  <h1>{str("Y " ++ string_of_int(square.y))}</h1>
+                </div>
+                )
+              |> ReasonReact.array
            )
         |> ReasonReact.array
       }
