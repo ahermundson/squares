@@ -22,7 +22,14 @@ let makeRow = i => Belt.Array.makeBy(10, j => {isTaken: false, id: i + j, x: i, 
 let board: board = [|
   makeRow(0),
   makeRow(1),
-  makeRow(2)
+  makeRow(2),
+  makeRow(3),
+  makeRow(4),
+  makeRow(5),
+  makeRow(6),
+  makeRow(7),
+  makeRow(8),
+  makeRow(9)
 |];
 
 let make = _children => {
