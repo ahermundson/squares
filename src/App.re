@@ -13,13 +13,13 @@ type square = {
   y: int
 };
 
-type row = array(square);
+type row = list(square);
 
-type board = array(row);
+type board = list(row);
 
-let makeRow = i => Belt.Array.makeBy(10, j => {isTaken: false, id: i + j, x: i, y: j});
+let makeRow = i => Belt.List.makeBy(10, j => {isTaken: false, id: i + j, x: i, y: j});
 
-let board: board = [|
+let board: board = [
   makeRow(0),
   makeRow(1),
   makeRow(2),
@@ -30,7 +30,7 @@ let board: board = [|
   makeRow(7),
   makeRow(8),
   makeRow(9)
-|];
+];
 
 let make = _children => {
   ...component,
@@ -39,9 +39,11 @@ let make = _children => {
       <h1> {str("Squares")} </h1>
       {
         board
-        |> Array.map(row =>
-             <BoardRow row />
-           )
+        |> List.map(row =>{
+            <h1>{str("TEst")}</h1>
+          }
+        )
+        |> Array.of_list
         |> ReasonReact.array
       }
     </div>,
