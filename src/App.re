@@ -40,7 +40,7 @@ let make = _children => {
       {
         board
         |> List.map(row =>{
-            <h1>{str("TEst")}</h1>
+            <h1>{str("Test")}</h1>
           }
         )
         |> Array.of_list
