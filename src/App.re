@@ -6,18 +6,11 @@ let component = ReasonReact.statelessComponent("App");
 
 let str = ReasonReact.string;
 
-type square = {
-  id: int,
-  isTaken: bool,
-  x: int,
-  y: int
-};
-
-type row = list(square);
+type row = list(BoardRow.square);
 
 type board = list(row);
 
-let makeRow = i => Belt.List.makeBy(10, j => {isTaken: false, id: i + j, x: i, y: j});
+let makeRow = i => Belt.List.makeBy(10, (j: int): BoardRow.square => {isTaken: false, id: i + j, x: i, y: j});
 
 let board: board = [
   makeRow(0),
@@ -40,7 +33,7 @@ let make = _children => {
       {
         board
         |> List.map(row =>{
-            <h1>{str("Test")}</h1>
+            <BoardRow row />
           }
         )
         |> Array.of_list
