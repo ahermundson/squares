@@ -11,10 +11,10 @@ type square = {
 let make = (~row, ~click, _children) => {
   ...component,
   render: _self =>
-    <div className="row" onClick={_evt => click()}>
+    <div className="row">
       {
         row
-        |> List.map((square: Square.square) => <Square square />)
+        |> List.map((square: Square.square) => <Square square click />)
         |> Array.of_list
         |> ReasonReact.array
       }

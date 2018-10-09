@@ -26,11 +26,11 @@ let board: board = [
 type state = {board};
 
 type action =
-  | ClickSquare;
+  | ClickSquare(Square.square);
 
 let component = ReasonReact.reducerComponent("App");
 
-let test = (): unit => Js.log("test");
+let test = (square: Square.square): unit => Js.log(square);
 
 let str = ReasonReact.string;
 
@@ -39,14 +39,14 @@ let make = _children => {
   initialState: () => ({board: board}: state),
   reducer: (action: action, state: state) =>
     switch (action) {
-    | ClickSquare => ReasonReact.Update({board: state.board})
+    | ClickSquare(square) => ReasonReact.Update({board: state.board})
     },
   render: _self =>
     <div className="App">
       <h1> {str("Squares")} </h1>
       {
         board
-        |> List.map(row => <BoardRow row click={() => test()} />)
+        |> List.map(row => <BoardRow row click=test />)
         |> Array.of_list
         |> ReasonReact.array
       }
