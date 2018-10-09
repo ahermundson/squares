@@ -2,12 +2,7 @@
 
 [@bs.module] external logo: string = "./logo.svg";
 
-let component = ReasonReact.statelessComponent("App");
-
-let str = ReasonReact.string;
-
 type row = list(Square.square);
-
 type board = list(row);
 
 let makeRow = i =>
@@ -28,14 +23,30 @@ let board: board = [
   makeRow(9),
 ];
 
+type state = {board};
+
+type action =
+  | ClickSquare;
+
+let component = ReasonReact.reducerComponent("App");
+
+let test = (): unit => Js.log("test");
+
+let str = ReasonReact.string;
+
 let make = _children => {
   ...component,
+  initialState: () => ({board: board}: state),
+  reducer: (action: action, state: state) =>
+    switch (action) {
+    | ClickSquare => ReasonReact.Update({board: state.board})
+    },
   render: _self =>
     <div className="App">
       <h1> {str("Squares")} </h1>
       {
         board
-        |> List.map(row => <BoardRow row />)
+        |> List.map(row => <BoardRow row click={() => test()} />)
         |> Array.of_list
         |> ReasonReact.array
       }

@@ -8,11 +8,15 @@ type square = {
   y: int,
 };
 
-let make = (~row, _children) => {
+let make = (~row, ~click, _children) => {
   ...component,
   render: _self =>
-    row
-    |> List.map((square: Square.square) => <Square square />)
-    |> Array.of_list
-    |> ReasonReact.array,
+    <div className="row" onClick={_evt => click()}>
+      {
+        row
+        |> List.map((square: Square.square) => <Square square />)
+        |> Array.of_list
+        |> ReasonReact.array
+      }
+    </div>,
 };

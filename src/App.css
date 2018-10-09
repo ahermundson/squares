@@ -26,3 +26,14 @@
     transform: rotate(360deg);
   }
 }
+
+.row {
+  display: flex;
+  justify-content: center;
+}
+
+.square {
+  display: flex;
+  justify-content: space-around;
+  border: 1px solid black;
+}
