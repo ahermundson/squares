@@ -12,7 +12,7 @@ let make = (~square, ~click, _children) => {
   ...component,
   render: _self =>
     square.isTaken ?
-      <h1> {str("X")} </h1> :
+      <h1 className="square"> {str("X")} </h1> :
       <div
         className="square"
         key={string_of_int(square.id)}

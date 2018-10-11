@@ -4,6 +4,10 @@
 
 type row = list(Square.square);
 type board = list(row);
+type user = {
+  name: string,
+  id: int,
+};
 
 let makeRow = (i, id) =>
   Belt.List.makeBy(10, (j: int) =>
@@ -30,9 +34,17 @@ type action =
 
 let component = ReasonReact.reducerComponent("App");
 
-let test = (square: Square.square): unit => Js.log(square);
-
 let str = ReasonReact.string;
+
+let updateBoard = (board: board, clickedSquare: Square.square) =>
+  board
+  |> List.map(row =>
+       row
+       |> List.map((square: Square.square) =>
+            square.id == clickedSquare.id ?
+              {...square, isTaken: true} : square
+          )
+     );
 
 let make = _children => {
   ...component,
@@ -40,31 +52,18 @@ let make = _children => {
   reducer: (action: action, state: state) =>
     switch (action) {
     | ClickSquare(clickedSquare) =>
-      Js.log(state.board);
-      ReasonReact.Update({
-        board:
-          List.map(
-            row =>
-              List.map(
-                (square: Square.square) =>
-                  square.id == clickedSquare.id ?
-                    {...square, isTaken: true} : square,
-                row,
-              ),
-            state.board,
-          ),
-      });
+      ReasonReact.Update({board: updateBoard(state.board, clickedSquare)})
     },
-  render: self =>
+  render: ({state, send}) =>
     <div className="App">
       <h1> {str("Squares")} </h1>
       {
-        board
+        state.board
         |> List.mapi((id: int, row) =>
              <BoardRow
                key={string_of_int(id)}
                row
-               click={x => self.send(ClickSquare(x))}
+               click={x => send(ClickSquare(x))}
              />
            )
         |> Array.of_list
