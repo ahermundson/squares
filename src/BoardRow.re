@@ -14,7 +14,9 @@ let make = (~row, ~click, _children) => {
     <div className="row">
       {
         row
-        |> List.map((square: Square.square) => <Square square click />)
+        |> List.map((square: Square.square) =>
+             <Square key={string_of_int(square.id)} square click />
+           )
         |> Array.of_list
         |> ReasonReact.array
       }
