@@ -1,12 +1,7 @@
 let component = ReasonReact.statelessComponent("BoardRow");
 let str = ReasonReact.string;
 
-type square = {
-  id: int,
-  isTaken: bool,
-  x: int,
-  y: int,
-};
+open SharedTypes;
 
 let make = (~row, ~click, _children) => {
   ...component,
@@ -14,7 +9,7 @@ let make = (~row, ~click, _children) => {
     <div className="row">
       {
         row
-        |> List.map((square: Square.square) => {
+        |> List.map((square: square) => {
              Js.log(square);
              <Square key={string_of_int(square.id)} square click />;
            })

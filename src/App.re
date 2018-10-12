@@ -2,7 +2,9 @@
 
 [@bs.module] external logo: string = "./logo.svg";
 
-type row = list(Square.square);
+open SharedTypes;
+
+type row = list(square);
 type board = list(row);
 type user = {
   name: string,
@@ -11,7 +13,7 @@ type user = {
 
 let makeRow = (i, id) =>
   Belt.List.makeBy(10, (j: int) =>
-    ({isTaken: false, id: id + j, x: i, y: j}: Square.square)
+    ({isTaken: false, id: id + j, x: i, y: j, takenByUserID: None}: square)
   );
 
 let board: board = [
@@ -27,47 +29,62 @@ let board: board = [
   makeRow(9, 90),
 ];
 
-type state = {board};
+type state = {
+  board,
+  currentUserID: option(int),
+};
 
 type action =
-  | ClickSquare(Square.square);
+  | ClickSquare(square)
+  | AddUser;
 
 let component = ReasonReact.reducerComponent("App");
 
 let str = ReasonReact.string;
 
-let updateBoard = (board: board, clickedSquare: Square.square) =>
+let updateBoard =
+    (board: board, clickedSquare: square, currentUserID: option(int)) =>
   board
   |> List.map(row =>
        row
-       |> List.map((square: Square.square) =>
+       |> List.map((square: square) =>
             square.id == clickedSquare.id ?
-              {...square, isTaken: true} : square
+              {...square, isTaken: true, takenByUserID: currentUserID} :
+              square
           )
      );
 
 let make = _children => {
   ...component,
-  initialState: () => ({board: board}: state),
+  initialState: () => ({board, currentUserID: None}: state),
   reducer: (action: action, state: state) =>
     switch (action) {
     | ClickSquare(clickedSquare) =>
-      ReasonReact.Update({board: updateBoard(state.board, clickedSquare)})
+      ReasonReact.Update({
+        ...state,
+        board: updateBoard(state.board, clickedSquare, state.currentUserID),
+      })
+    | AddUser => ReasonReact.Update({...state, currentUserID: Some(1)})
     },
   render: ({state, send}) =>
-    <div className="App">
-      <h1> {str("Squares")} </h1>
-      {
-        state.board
-        |> List.mapi((id: int, row) =>
-             <BoardRow
-               key={string_of_int(id)}
-               row
-               click={x => send(ClickSquare(x))}
-             />
-           )
-        |> Array.of_list
-        |> ReasonReact.array
-      }
-    </div>,
+    switch (state.currentUserID) {
+    | None =>
+      <button onClick=(_evt => send(AddUser))> {str("Test")} </button>
+    | Some(_userID) =>
+      <div className="App">
+        <h1> {str("Squares")} </h1>
+        {
+          state.board
+          |> List.mapi((id: int, row) =>
+               <BoardRow
+                 key={string_of_int(id)}
+                 row
+                 click=(x => send(ClickSquare(x)))
+               />
+             )
+          |> Array.of_list
+          |> ReasonReact.array
+        }
+      </div>
+    },
 };

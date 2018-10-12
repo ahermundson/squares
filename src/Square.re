@@ -1,12 +1,7 @@
 let component = ReasonReact.statelessComponent("Square");
 let str = ReasonReact.string;
 
-type square = {
-  id: int,
-  isTaken: bool,
-  x: int,
-  y: int,
-};
+open SharedTypes;
 
 let make = (~square, ~click, _children) => {
   ...component,
