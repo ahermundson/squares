@@ -2,113 +2,29 @@
 
 [@bs.module] external logo: string = "./logo.svg";
 
-open SharedTypes;
+type route =
+  | Games
+  | Board;
 
-module GetAllGames = [%graphql
-  {|
-    query getAllGames {
-        allGames {
-            _id
-        }
-    }
-  |}
-];
-
-module GetAllGamesQuery = ReasonApollo.CreateQuery(GetAllGames);
-
-type row = list(square);
-type board = list(row);
-type user = {
-  name: string,
-  id: int,
-};
-
-let makeRow = (i, id) =>
-  Belt.List.makeBy(10, (j: int) =>
-    ({isTaken: false, id: id + j, x: i, y: j, takenByUserID: None}: square)
-  );
-
-let board: board = [
-  makeRow(0, 0),
-  makeRow(1, 10),
-  makeRow(2, 20),
-  makeRow(3, 30),
-  makeRow(4, 40),
-  makeRow(5, 50),
-  makeRow(6, 60),
-  makeRow(7, 70),
-  makeRow(8, 80),
-  makeRow(9, 90),
-];
-
-type state = {
-  board,
-  currentUserID: option(int),
-};
+type state = {route};
 
 type action =
-  | ClickSquare(square)
-  | AddUser;
+  | ChangeRoute(route);
+
+let reducer = (action, _state) =>
+  switch (action) {
+  | ChangeRoute(route) => ReasonReact.Update({route: route})
+  };
 
 let component = ReasonReact.reducerComponent("App");
 
-let str = ReasonReact.string;
-
-let updateBoard =
-    (board: board, clickedSquare: square, currentUserID: option(int)) =>
-  board
-  |> List.map(row =>
-       row
-       |> List.map((square: square) =>
-            square.id == clickedSquare.id ?
-              {...square, isTaken: true, takenByUserID: currentUserID} :
-              square
-          )
-     );
-
 let make = _children => {
   ...component,
-  initialState: () => ({board, currentUserID: None}: state),
-  reducer: (action: action, state: state) =>
-    switch (action) {
-    | ClickSquare(clickedSquare) =>
-      ReasonReact.Update({
-        ...state,
-        board: updateBoard(state.board, clickedSquare, state.currentUserID),
-      })
-    | AddUser => ReasonReact.Update({...state, currentUserID: Some(1)})
-    },
-  render: ({state, send}) =>
-    switch (state.currentUserID) {
-    | None =>
-      <button onClick=(_evt => send(AddUser))> {str("Test")} </button>
-    | Some(_userID) =>
-      <div className="App">
-        <h1> {str("Squares")} </h1>
-        {
-          state.board
-          |> List.mapi((id: int, row) =>
-               <BoardRow
-                 key={string_of_int(id)}
-                 row
-                 click=(x => send(ClickSquare(x)))
-               />
-             )
-          |> Array.of_list
-          |> ReasonReact.array
-        }
-        <GetAllGamesQuery>
-          ...(
-               ({result}) =>
-                 switch (result) {
-                 | Loading => <h1> {str("Loading")} </h1>
-                 | Error(_error) => <h1> {str("Error")} </h1>
-                 | Data(response) =>
-                   Js.log(response);
-                   <h1> {str("We have data people")} </h1>;
-                 }
-             )
-        </GetAllGamesQuery>
-      </div>
+  initialState: () => {route: Games},
+  reducer,
+  render: self =>
+    switch (self.state.route) {
+    | Games => <Games />
+    | Board => <Board />
     },
 };
