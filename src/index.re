@@ -9,6 +9,6 @@ let instance =
   ReasonApollo.createApolloClient(~link=httpLink, ~cache=inMemoryCache, ());
 
 ReactDOMRe.renderToElementWithId(
-  <ReasonApollo.Provider client=instance> <Board /> </ReasonApollo.Provider>,
+  <ReasonApollo.Provider client=instance> <App /> </ReasonApollo.Provider>,
   "root",
 );
