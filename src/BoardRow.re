@@ -9,10 +9,9 @@ let make = (~row, ~click, _children) => {
     <div className="row">
       {
         row
-        |> List.map((square: square) => {
-             Js.log(square);
-             <Square key={string_of_int(square.id)} square click />;
-           })
+        |> List.map((square: square) =>
+             <Square key={string_of_int(square.id)} square click />
+           )
         |> Array.of_list
         |> ReasonReact.array
       }

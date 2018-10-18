@@ -4,6 +4,18 @@
 
 open SharedTypes;
 
+module GetAllGames = [%graphql
+  {|
+    query getAllGames {
+        allGames {
+            _id
+        }
+    }
+  |}
+];
+
+module GetAllGamesQuery = ReasonApollo.CreateQuery(GetAllGames);
+
 type row = list(square);
 type board = list(row);
 type user = {
@@ -85,6 +97,18 @@ let make = _children => {
           |> Array.of_list
           |> ReasonReact.array
         }
+        <GetAllGamesQuery>
+          ...(
+               ({result}) =>
+                 switch (result) {
+                 | Loading => <h1> {str("Loading")} </h1>
+                 | Error(_error) => <h1> {str("Error")} </h1>
+                 | Data(response) =>
+                   Js.log(response);
+                   <h1> {str("We have data people")} </h1>;
+                 }
+             )
+        </GetAllGamesQuery>
       </div>
     },
 };
