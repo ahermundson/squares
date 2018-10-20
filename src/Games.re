@@ -10,7 +10,17 @@ module GetAllGames = [%graphql
   |}
 ];
 
-type gameType = {_id: string};
+type t = {
+  _id: option(string),
+  firstQuarterHome: option(Js.null(int)),
+  firstQuarterAway: option(Js.null(int)),
+  secondQuarterHome: option(Js.null(int)),
+  secondQuarterAway: option(Js.null(int)),
+  thirdQuarterHome: option(Js.null(int)),
+  thirdQuarterAway: option(Js.null(int)),
+  fourthQuarterHome: option(Js.null(int)),
+  fourthQuarterAway: option(Js.null(int)),
+};
 
 module GetAllGamesQuery = ReasonApollo.CreateQuery(GetAllGames);
 
@@ -30,7 +40,11 @@ let make = _children => {
                let gamesList =
                  response##allGames
                  |> Array.map(game =>
-                      <h1 key=game##_id> {str(game##_id)} </h1>
+                      switch (game) {
+                      | Some(game) =>
+                        let id = Some(game##_id);
+                        ();
+                      }
                     );
 
                ReasonReact.arrayToElement(gamesList);

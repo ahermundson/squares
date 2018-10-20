@@ -1,7 +1,12 @@
 {
   "name": "reason-scripts",
   "sources": ["src"],
-  "bs-dependencies": ["reason-react", "reason-apollo", "@glennsl/bs-jest"],
+  "bs-dependencies": [
+    "reason-react",
+    "reason-apollo",
+    "@glennsl/bs-jest",
+    "@glennsl/bs-json"
+  ],
   "reason": {
     "react-jsx": 2
   },
