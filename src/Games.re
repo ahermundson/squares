@@ -62,9 +62,9 @@ let make = _children => {
                switch (response##allGames) {
                | None => <h1> {str("No games")} </h1>
                | Some(games) =>
-                 let gamesElements =
-                   games |> Js.Array.map(game => <h1> {str(game._id)} </h1>);
-                 <div> {ReasonReact.array(gamesElements)} </div>;
+                 games
+                 |> Js.Array.map(game => <Game key=game##_id game />)
+                 |> ReasonReact.array
                }
              }
          }
