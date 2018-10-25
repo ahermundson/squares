@@ -54,7 +54,7 @@ let updateBoard =
           )
      );
 
-let make = _children => {
+let make = (~selectedGame, _children) => {
   ...component,
   initialState: () => ({board, currentUserID: None}: state),
   reducer: (action: action, state: state) =>
@@ -69,7 +69,8 @@ let make = _children => {
   render: ({state, send}) =>
     switch (state.currentUserID) {
     | None =>
-      <button onClick=(_evt => send(AddUser))> {str("Test")} </button>
+      Js.log(selectedGame);
+      <button onClick=(_evt => send(AddUser))> {str("Test")} </button>;
     | Some(_userID) =>
       <div className="App">
         <h1> {str("Squares")} </h1>

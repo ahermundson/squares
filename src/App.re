@@ -6,25 +6,29 @@ type route =
   | Games
   | Board;
 
-type state = {route};
+type state = {
+  route,
+  selectedGame: option(string),
+};
 
 type action =
-  | ChangeRoute(route);
+  | SelectGame(string);
 
 let reducer = (action, _state) =>
   switch (action) {
-  | ChangeRoute(route) => ReasonReact.Update({route: route})
+  | SelectGame((id: string)) =>
+    ReasonReact.Update({selectedGame: Some(id), route: Board})
   };
 
 let component = ReasonReact.reducerComponent("App");
 
 let make = _children => {
   ...component,
-  initialState: () => {route: Games},
+  initialState: () => {route: Games, selectedGame: None},
   reducer,
   render: self =>
     switch (self.state.route) {
-    | Games => <Games />
-    | Board => <Board />
+    | Games => <Games selectGame=(id => self.send(SelectGame(id))) />
+    | Board => <Board selectedGame={self.state.selectedGame} />
     },
 };

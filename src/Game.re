@@ -1,6 +1,11 @@
+type game = {_id: string};
+
 let component = ReasonReact.statelessComponent("Game");
 
-let make = (~game, _children) => {
+let make = (~selectGame, ~game, _children) => {
   ...component,
-  render: _self => <h1> {ReasonReact.string(game##_id)} </h1>,
+  render: self => {
+    Js.log(self.state);
+    <h1 onClick={_evt => selectGame()}> {ReasonReact.string(game##_id)} </h1>;
+  },
 };
