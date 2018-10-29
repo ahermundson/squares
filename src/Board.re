@@ -1,8 +1,23 @@
 [%bs.raw {|require('./App.css')|}];
 
-[@bs.module] external logo: string = "./logo.svg";
-
 open SharedTypes;
+
+module GetGameSquares = [%graphql
+  {|
+    query getThoseGameSquares($id: ID!) {
+        getGameSquares(id: $id) {
+            x
+            y
+            isTaken
+            takenByUser {
+              _id
+            }
+        }
+    }
+  |}
+];
+
+module GetGameSquareQuery = ReasonApollo.CreateQuery(GetGameSquares);
 
 type row = list(square);
 type board = list(row);
@@ -72,6 +87,7 @@ let make = (~selectedGame, _children) => {
       Js.log(selectedGame);
       <button onClick=(_evt => send(AddUser))> {str("Test")} </button>;
     | Some(_userID) =>
+      let gameQuery = GetGameSquares.make(~id="5bd4bed2dfe6d3b637be8662", ());
       <div className="App">
         <h1> {str("Squares")} </h1>
         {
@@ -86,6 +102,20 @@ let make = (~selectedGame, _children) => {
           |> Array.of_list
           |> ReasonReact.array
         }
-      </div>
+        <GetGameSquareQuery variables=gameQuery##variables>
+          ...(
+               ({result}) =>
+                 switch (result) {
+                 | Loading => <h1> {str("Loading")} </h1>
+                 | Error(error) =>
+                   Js.log(error);
+                   <h1> {str("Error")} </h1>;
+                 | Data(response) =>
+                   Js.log(response);
+                   <h1> {str("We have data")} </h1>;
+                 }
+             )
+        </GetGameSquareQuery>
+      </div>;
     },
 };
