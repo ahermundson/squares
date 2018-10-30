@@ -10,7 +10,7 @@ let make = (~row, ~click, _children) => {
       {
         row
         |> List.map((square: square) =>
-             <Square key={string_of_int(square.id)} square click />
+             <Square key={string_of_int(square.x)} square click />
            )
         |> Array.of_list
         |> ReasonReact.array

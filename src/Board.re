@@ -28,7 +28,7 @@ type user = {
 
 let makeRow = (i, id) =>
   Belt.List.makeBy(10, (j: int) =>
-    ({isTaken: false, id: id + j, x: i, y: j, takenByUserID: None}: square)
+    ({isTaken: false, x: i, y: j, takenByUserID: None}: square)
   );
 
 let board: board = [
@@ -56,6 +56,24 @@ type action =
 let component = ReasonReact.reducerComponent("App");
 
 let str = ReasonReact.string;
+
+let createBoardRows = (squares: GetGameSquares.t) =>
+  switch (squares##getGameSquares) {
+  | None => Js.log("None")
+  | Some(squares) =>
+    let zero =
+      squares
+      |> Js.Array.map(square =>
+           {
+             x: square.x,
+             y: square.y,
+             isTaken: square.isTaken,
+             takenByUserID: square.takenByUserID,
+           }
+         )
+      |> Js.Array.filter(newSquare => newSquare.x == 0);
+    ();
+  };
 
 let updateBoard =
     (board: board, clickedSquare: square, currentUserID: option(int)) =>
@@ -90,18 +108,6 @@ let make = (~selectedGame, _children) => {
       let gameQuery = GetGameSquares.make(~id="5bd4bed2dfe6d3b637be8662", ());
       <div className="App">
         <h1> {str("Squares")} </h1>
-        {
-          state.board
-          |> List.mapi((id: int, row) =>
-               <BoardRow
-                 key={string_of_int(id)}
-                 row
-                 click=(x => send(ClickSquare(x)))
-               />
-             )
-          |> Array.of_list
-          |> ReasonReact.array
-        }
         <GetGameSquareQuery variables=gameQuery##variables>
           ...(
                ({result}) =>
@@ -111,7 +117,7 @@ let make = (~selectedGame, _children) => {
                    Js.log(error);
                    <h1> {str("Error")} </h1>;
                  | Data(response) =>
-                   Js.log(response);
+                   createBoardRows(response);
                    <h1> {str("We have data")} </h1>;
                  }
              )

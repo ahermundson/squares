@@ -10,7 +10,7 @@ let make = (~square, ~click, _children) => {
       <h1 className="square"> {str("X")} </h1> :
       <div
         className="square"
-        key={string_of_int(square.id)}
+        key={string_of_int(square.x)}
         onClick={_evt => click(square)}>
         <h1> {str("X " ++ string_of_int(square.x))} </h1>
         <h1> {str("Y " ++ string_of_int(square.y))} </h1>
