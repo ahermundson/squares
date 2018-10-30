@@ -3,10 +3,10 @@ let str = ReasonReact.string;
 
 open SharedTypes;
 
-let make = (~square, ~click, _children) => {
+let make = (~square: square, ~click, _children) => {
   ...component,
   render: _self =>
-    square.isTaken ?
+    square##isTaken ?
       <h1 className="square"> {str("X")} </h1> :
       <div
         className="square"
