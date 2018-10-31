@@ -1,9 +1,8 @@
-type user = {_id: string};
-
+type user = {. "_id": string};
 type square = {
   .
-  isTaken: bool,
-  x: int,
-  y: int,
-  takenByUserID: option(user),
+  "isTaken": bool,
+  "x": int,
+  "y": int,
+  "takenByUser": option(user),
 };
