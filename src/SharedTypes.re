@@ -4,5 +4,4 @@ type square = {
   "isTaken": bool,
   "x": int,
   "y": int,
-  "takenByUser": option(user),
 };
