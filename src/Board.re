@@ -26,20 +26,25 @@ let component = ReasonReact.reducerComponent("App");
 
 let str = ReasonReact.string;
 
+let createBoardRow = (squares, x) =>
+  squares |> Js.Array.filter(square => square##x == x);
+
 let parseSquares = squares =>
   switch (squares) {
   | None => [||]
-  | Some(squares) =>
-    let filtered = squares |> Js.Array.filter(square => square##x == 0);
-    Js.Array.sortInPlace(filtered);
+  | Some(squares) => [|
+      createBoardRow(squares, 0),
+      createBoardRow(squares, 1),
+      createBoardRow(squares, 2),
+      createBoardRow(squares, 3),
+      createBoardRow(squares, 4),
+      createBoardRow(squares, 5),
+      createBoardRow(squares, 6),
+      createBoardRow(squares, 7),
+      createBoardRow(squares, 8),
+      createBoardRow(squares, 9),
+    |]
   };
-
-/* let createBoardRows = squares => {
-     parseItems(squares)
-     |> Js.Array.filter(square => square##x == 0)
-     |> Array.to_list;
-     ();
-   }; */
 
 let clicker = test => Js.log(test);
 let make = (~selectedGame, _children) => {
@@ -70,9 +75,10 @@ let make = (~selectedGame, _children) => {
                    <h1> {str("Error")} </h1>;
                  | Data(response) =>
                    let gameSquares = response##getGameSquares;
-                   let parsedSquares = parseSquares(gameSquares);
-                   Js.log(parsedSquares);
-                   <BoardRow row=parsedSquares click=clicker />;
+                   let parsedRows = parseSquares(gameSquares);
+                   parsedRows
+                   |> Js.Array.map(row => <BoardRow row click=clicker />)
+                   |> ReasonReact.array;
                  }
              )
         </GetGameSquareQuery>
