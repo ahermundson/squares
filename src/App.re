@@ -29,6 +29,10 @@ let make = _children => {
   render: self =>
     switch (self.state.route) {
     | Games => <Games selectGame=(id => self.send(SelectGame(id))) />
-    | Board => <Board selectedGame={self.state.selectedGame} />
+    | Board =>
+      switch (self.state.selectedGame) {
+      | Some(selectedGame) => <Board selectedGame />
+      | None => <h1> {ReasonReact.string("Error")} </h1>
+      }
     },
 };

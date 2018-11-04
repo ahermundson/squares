@@ -5,6 +5,7 @@ module GetGameSquares = [%graphql
   {|
     query getThoseGameSquares($id: ID!) {
         getGameSquares(id: $id) {
+            _id
             x
             y
             isTaken
@@ -59,10 +60,9 @@ let make = (~selectedGame, _children) => {
   render: ({state, send}) =>
     switch (state.currentUserID) {
     | None =>
-      Js.log(selectedGame);
-      <button onClick=(_evt => send(AddUser))> {str("Test")} </button>;
+      <button onClick=(_evt => send(AddUser))> {str("Test")} </button>
     | Some(_userID) =>
-      let gameQuery = GetGameSquares.make(~id="5bd4bed2dfe6d3b637be8662", ());
+      let gameQuery = GetGameSquares.make(~id=selectedGame, ());
       <div className="App">
         <h1> {str("Squares")} </h1>
         <GetGameSquareQuery variables=gameQuery##variables>
@@ -77,7 +77,9 @@ let make = (~selectedGame, _children) => {
                    let gameSquares = response##getGameSquares;
                    let parsedRows = parseSquares(gameSquares);
                    parsedRows
-                   |> Js.Array.map(row => <BoardRow row click=clicker />)
+                   |> Js.Array.mapi((row, i) =>
+                        <BoardRow key={string_of_int(i)} row click=clicker />
+                      )
                    |> ReasonReact.array;
                  }
              )
