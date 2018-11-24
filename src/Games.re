@@ -5,6 +5,10 @@ module GetAllGames = [%graphql
     query getAllGames {
         allGames {
             _id
+            boardId
+            homeTeam {
+              teamName
+            }
         }
     }
   |}
@@ -32,7 +36,7 @@ let make = (~selectGame, _children) => {
                       <Game
                         key=game##_id
                         game
-                        selectGame=(() => selectGame(game##_id))
+                        selectGame=(() => selectGame(game##boardId))
                       />
                     )
                  |> ReasonReact.array

@@ -3,14 +3,14 @@ let str = ReasonReact.string;
 
 open SharedTypes;
 
-let make = (~row, ~click, _children) => {
+let make = (~row, _children) => {
   ...component,
   render: _self =>
     <div className="row">
       {
         row
         |> Js.Array.map((square: square) =>
-             <Square key=square##_id square click />
+             <Square key=square##_id square />
            )
         |> ReasonReact.array
       }

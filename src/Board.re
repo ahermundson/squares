@@ -9,6 +9,10 @@ module GetGameSquares = [%graphql
             x
             y
             isTaken
+            takenByUser {
+              _id
+              first_name
+            }
         }
     }
   |}
@@ -47,7 +51,6 @@ let parseSquares = squares =>
     |]
   };
 
-let clicker = test => Js.log(test);
 let make = (~selectedGame, _children) => {
   ...component,
   initialState: () => ({currentUserID: None}: state),
@@ -78,7 +81,7 @@ let make = (~selectedGame, _children) => {
                    let parsedRows = parseSquares(gameSquares);
                    parsedRows
                    |> Js.Array.mapi((row, i) =>
-                        <BoardRow key={string_of_int(i)} row click=clicker />
+                        <BoardRow key={string_of_int(i)} row />
                       )
                    |> ReasonReact.array;
                  }
